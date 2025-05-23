@@ -2,7 +2,11 @@ import unittest
 
 # Importing my own files
 from textnode import TextNode, TextType
-from inline_markdown import split_nodes_delimiter
+from inline_markdown import (
+    split_nodes_delimiter,
+    extract_markdown_images,
+    extract_markdown_links,
+)
 
 # TestInlineMarkdown class
 class TestInlineMarkdown(unittest.TestCase):
@@ -78,6 +82,22 @@ class TestInlineMarkdown(unittest.TestCase):
                 TextNode("This is text with a ", TextType.TEXT),
                 TextNode("code block", TextType.CODE),
                 TextNode(" word", TextType.TEXT),
+            ],
+        )
+    
+    def test_extract_markdown_images(self):
+        matches = extract_markdown_images("This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)")
+        self.assertListEqual(matches, [("image", "https://i.imgur.com/zjjcJKZ.png")])
+    
+    def text_extract_markdown_links(self):
+        matches = extract_markdown_links(
+            "This is text with a [link](https://boot.dev) and [another link](https://blog.boot.dev)"
+        )
+        self.assertListEqual(
+            matches,
+            [
+                ("link", "https://boot.dev"),
+                ("another link", "https://blog.boot.dev"),
             ],
         )
 
