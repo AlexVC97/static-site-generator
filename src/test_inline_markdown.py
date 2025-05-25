@@ -99,7 +99,7 @@ class TestInlineMarkdown(unittest.TestCase):
         )
     
     def test_split_image_single(self):
-        node = TextNode("![image](https://www.example.COM/IMAGE.PNG)")
+        node = TextNode("![image](https://www.example.COM/IMAGE.PNG)", TextType.TEXT)
         new_nodes = split_nodes_image([node])
         self.assertListEqual(
             new_nodes,
