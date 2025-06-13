@@ -1,9 +1,18 @@
 import os
+from pathlib import Path
 
 # Importing my own files
 from markdown_blocks import markdown_to_html_node
 
-# Function: *
+# Function: pulls the h1 header from the markdown file
+def extract_title(md):
+    lines = md.split("\n")
+    for line in lines:
+        if line.startswith("# "):
+            return line[2:]
+    raise ValueError("no title found")
+
+# Function: converts markdown to a complete HTML page using a template
 def generate_page(from_path, template_path, dest_path):
     print(f"Generating page from `{from_path}` to `{dest_path}` using `{template_path}`")
     
@@ -28,10 +37,13 @@ def generate_page(from_path, template_path, dest_path):
     to_file = open(dest_path, "w")
     to_file.write(template)
 
-# Function: *
-def extract_title(md):
-    lines = md.split("\n")
-    for line in lines:
-        if line.startswith("# "):
-            return line[2:]
-    raise ValueError("no title found")
+# Function: generate all the HTML files, with the new ones included
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    for filename in os.listdir(dir_path_content):
+        from_path = os.path.join(dir_path_content, filename)
+        dest_path = os.path.join(dest_dir_path, filename)
+        if os.path.isfile(from_path):
+            dest_path = Path(dest_path).with_suffix(".html")
+            generate_page(from_path, template_path, dest_path)
+        else:
+            generate_pages_recursive(from_path, template_path, dest_path)
